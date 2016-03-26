@@ -8,31 +8,24 @@ pkgInfo = require "./pkgInfo"
 Q = require 'q'
 colors = require "colors/safe"
 
-globalOpts =
-  colors :
-    "error" : "red"
-    "warn" : "yellow"
-    "fatal" : "orange"
-    "debug" : "cyan"
-    "info" : "green"
 
 class Log
 
-  constructor : ( @callingModule, @level = "info" ) ->
+  constructor : ( @callingModule, @level = "info", @subTag ) ->
     @ready = @makeTag()
     @ready.then ( tag ) =>
       @TAG = tag
+      @TAG += "-#{@subTag}" if @subTag?
 
   global : ( opts = {} ) =>
-    for own k,v of opts
-      globalOpts[ k ] = opts[ k ]
+    conf.overrides opts
 
   init : ( opt = {} ) ->
     @level = opt.level if opt.level?
     transports = [ new winston.transports.Console( colorize : true ) ]
     @logger = new winston.Logger
       transports : transports
-      level : globalOpts.level or @level or "info"
+      level : @level or conf.get( "logger:level" )
 
   makeTag : =>
     defer = Q.defer()
@@ -74,12 +67,13 @@ winston.transports.Console.prototype.log = ( level, msg, meta, callback ) ->
   l = level.substr( 0, 1 ).toUpperCase()
   ts = moment().format( "MM-DD-HH:mm:ss:SSS" )
   msg = strLeft msg, "undefined"
-  parts =  msg.split "] "
-  tag = parts[0]
-  msg = parts[1..-1].join "] "
+  parts = msg.split "] "
+  tag = parts[ 0 ]
+  msg = parts[ 1..-1 ].join "] "
   prefix = "#{l}/#{ts} #{tag}]"
 
-  color = globalOpts.colors[ level ]
+  _colors = conf.get "logger:colors"
+  color = _colors[ level ]
   line = [ colors[ color ]( prefix ), " ", msg ]
   output = [ line.join "" ]
 
@@ -92,6 +86,6 @@ winston.transports.Console.prototype.log = ( level, msg, meta, callback ) ->
   self.emit "logged"
   callback null, true
 
-module.exports = ( module, level ) -> new Log( module, level )
+module.exports = ( module, level, subTag ) -> new Log( module, level, subTag )
 
 

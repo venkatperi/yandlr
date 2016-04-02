@@ -1,0 +1,13 @@
+{
+  "yandlr": {
+    "loggers": {
+      "yandlr:test/log.test": {
+        "transports": {
+          "console": {
+            "level": "debug"
+          }
+        }
+      }
+    }
+  }
+}

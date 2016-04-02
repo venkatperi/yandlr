@@ -1,12 +1,11 @@
 {
-  "logger": {
+  "yandlr": {
     "colors": {
       "error": "red",
       "warn": "yellow",
       "fatal": "orange",
       "debug": "cyan",
       "info": "green"
-    },
-    "level": "info"
+    }
   }
 }

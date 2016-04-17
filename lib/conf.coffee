@@ -1,5 +1,5 @@
-hconf = require 'hconf'
-hconf module : module
+hconf = require( 'hconf' ) module : module
 module.exports = hconf
+
 
 

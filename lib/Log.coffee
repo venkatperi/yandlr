@@ -2,7 +2,8 @@ path = require 'path'
 conf = require "./conf"
 moduletag = require "moduletag"
 Queue = require "node-observable-queue"
-Provider = require "./providers/Console"
+#Provider = require "./providers/Console"
+Provider = require "./providers/Winston"
 Q = require 'q'
 levels = require "./utils/levels"
 
@@ -11,31 +12,35 @@ global.__yandlr.provider = new Provider()
 
 module.exports = class Log
   constructor : ->
-    @ready = Q true
     @provider = global.__yandlr.provider
     @queue = new Queue()
     @initLevels()
 
   log : ( level, msg, meta ) =>
-    @queue.enqueue level : level, msg : msg, meta : meta, tag : @TAG
-    
+    @initialized.then =>
+      @queue.enqueue level : level, msg : msg, meta : meta, tag : @TAG
+
   init : ( opts ) =>
     opts = {} unless opts?
-    @ready = conf
+    @initialize = Q.defer()
+    @initialized = @initialize.promise
+
+    @createTag opts
     .then =>
-      @createTag opts
+      conf.get "yandlr"
     .then =>
+      @logger = @provider.get @TAG
       @queue.on "enqueue", @processQueue
+      @initialize.resolve true
       @processQueue()
 
   processQueue : =>
     while item = @queue.dequeue()
       do ( item ) =>
-        @ready.then =>
-          @actualLog item
+        @actualLog item
 
   actualLog : ( item ) =>
-    @provider.log item
+    @logger.log item.level, item.msg
 
   createTag : ( opts ) =>
     throw new Error "missing option: module" unless opts.module?

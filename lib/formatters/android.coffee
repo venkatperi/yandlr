@@ -3,14 +3,24 @@ strRight = require "underscore.string/strRight"
 strLeft = require "underscore.string/strLeft"
 colors = require "colors/safe"
 _colors = require "../utils/colors"
+conf = require "../conf"
 
-module.exports = ( opt ) ->
+conf.get( "yandlr.colors" ).then ( c ) -> _colors = c
+
+module.exports = ( format ) -> ( opt ) ->
+  format = {} unless format?
   l = opt.level.substr( 0, 1 ).toUpperCase()
-  ts = moment().format( "MM-DD-HH:mm:ss:SSS" )
-  msg = strLeft opt.msg, "undefined"
+
+  timestamp = format.timestamp or "MM-DD-HH:mm:ss:SSS"
+  ts = moment().format( timestamp )
+
+  msg = opt.msg or opt.message
+  msg = strLeft msg, "undefined"
   prefix = [ "#{l}/#{ts} " ]
-  if opt.tag?
-    prefix.push = "[#{opt.tag}]"
+  tag = opt.tag or opt.label
+
+  if tag?
+    prefix.push "[#{tag}]"
   else
     parts = msg.split "] "
     if parts.length > 1
@@ -22,10 +32,17 @@ module.exports = ( opt ) ->
 
   prefix = prefix.join ""
 
-  color = _colors[ opt.level ]
-  line = [ colors[ color ]( prefix ), " ", msg ]
+  line = []
+  if opt.colorize
+    color = _colors[ opt.level ]
+    line.push colors[ color ]( prefix )
+  else
+    line.push prefix
+  line.push " "
+  line.push msg
+ 
   output = [ line.join "" ]
 
-  output.push "#{JSON.stringify( opt.meta, null, 2 )}" if opt.meta? and not _.isEmpty opt.meta
+  #output.push "#{JSON.stringify( opt.meta, null, 2 )}" if opt.meta? and not _.isEmpty opt.meta
 
   output.join '\n'

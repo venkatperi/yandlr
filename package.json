@@ -5,14 +5,13 @@
   "description": "Yet Another NoDe LoggeR",
   "dependencies": {
     "colors": "^1.1.2",
-    "hconf": "^0.2.1",
-    "moduletag": "file:../moduletag",
+    "hconf": "^1.0.0",
     "moment": "^2.12.0",
-    "nconf": "^0.7.1",
-    "node-walkup": "^1.0.0",
-    "pkginfo-async": "file:../pkgInfo-async",
+    "node-observable-queue": "^1.0.1",
     "q": "^1.4.1",
+    "traverse": "^0.6.6",
     "underscore": "^1.8.3",
+    "underscore.deep": "^0.5.1",
     "underscore.string": "^3.3.4",
     "winston": "^2.2.0"
   },
@@ -21,7 +20,7 @@
     "npm": ">= 1.0.0"
   },
   "bundleDependencies": [],
-  "main": "./index",
+  "main": "./dist/index",
   "devDependencies": {
     "coffee-script": "^1.8.0",
     "coffeeify": "~0.7.0",

@@ -1,3 +1,4 @@
+--harmony_proxies
 --require coffee-script/register
 --compilers coffee:coffee-script/register
 --timeout 5000

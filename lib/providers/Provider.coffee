@@ -3,6 +3,9 @@ module.exports = class Provider
 
   add : ( opts ) =>
     throw new Error "virtual function called"
+    
+  get: (name) =>
+    @
 
   log : ( opts ) =>
     throw new Error "virtual function called"

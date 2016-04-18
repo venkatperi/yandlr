@@ -5,9 +5,9 @@
   "description": "Yet Another NoDe LoggeR",
   "dependencies": {
     "colors": "^1.1.2",
-    "hconf": "^1.0.0",
+    "hconf": "^1.0.2",
     "moment": "^2.12.0",
-    "node-observable-queue": "^1.0.1",
+    "node-observable-queue": "^1.0.2",
     "q": "^1.4.1",
     "traverse": "^0.6.6",
     "underscore": "^1.8.3",
